@@ -201,7 +201,6 @@ class InvertedIndexNoHash:
         term_count = 0
         previous_position = 0
         doc_count = 0
-        tuple_value = []
         temp_list = []
         for tuple in self.List:
             if previous_term == -1:
