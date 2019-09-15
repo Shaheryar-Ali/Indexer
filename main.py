@@ -1,11 +1,13 @@
 from bs4 import BeautifulSoup
-import requests
 import html5lib
 import glob
 import re
 import os.path
 from nltk.stem import PorterStemmer
-from lxml import html
+import sys
+
+#My terminal ran it as python main.py and givrs error at ./main.py so its designed for that
+#Directory name should end with a '\' like 'Corpus\'
 
 
 class Token:
@@ -17,7 +19,7 @@ class Token:
 
     # We assign the directory to the class that was inputted through console
     def __init__(self, path):
-        self.directory = path
+        self.directory = path + "*"
 
     # Gets a list of all path in directory
     def ListofFiles(self):
@@ -181,7 +183,11 @@ class InvertedIndexNoHash:
 
 
 
-def main(arg):
+def main():
+    if sys.argv.__len__() < 2:
+        print("Insufficient arguments")
+
+    arg = sys.argv[1]
     token = Token(arg)
     token.Tokenize()
     NoHash = InvertedIndexNoHash(token)
@@ -189,4 +195,4 @@ def main(arg):
     NoHash.SavetoFile()
 
 
-main("corpus\*")
+main()

@@ -1,5 +1,12 @@
+import sys
 
-def read_index(argv):
+#My terminal ran it as python read_index.py and givrs error at ./read_index.py so its designed for that
+
+def read_index():
+    if sys.argv.__len__() < 2:
+        print("Insufficient arguments")
+
+    argv = sys.argv[1]
     file1 = open("termids.txt","r")
     list = file1.read()
     index = -1
@@ -23,4 +30,4 @@ def read_index(argv):
     print("Number of documents containing term:", info[2] )
     print("Term frequency in corpus: ", info[1])
 
-read_index("age")
+read_index()
