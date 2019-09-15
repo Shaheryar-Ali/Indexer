@@ -164,35 +164,98 @@ class InvertedIndexHash:
 
 
  #End of class InvertedIndexHash
+class InvertedIndexNoHash:
+    List = []
+    termDict = {}
+    docDict = {}
+    token = object
 
+    def __init__(self, token):
+        self.token = token
+        self.termDict = token.termDictionary
+        self.docDict = token.documentDictionary
 
+    def MakeList(self):
+        FilesList = self.token.ListofFiles()
+        Stopwords = self.token.ListofStopWords()
+        for file in FilesList:
+            text = self.token.GetText(file)
+            if text == ':':
+                print("Failed to open")
+                continue
+            stemmedtext = self.token.ReduceToken(text, Stopwords)
+            filename = os.path.basename(file)
+            docID = self.docDict[filename]
+            position = 1
+            for word in stemmedtext:
+                self.List.append((self.termDict[word], docID, position))
+                position += 1
+        self.List.sort()
 
+        
 
+    def SavetoFile(self):
+        file = open("term_index_no_hash.txt", "w+")
+        previous_term = -1
+        previous_doc = 0
+        term_count = 0
+        previous_position = 0
+        doc_count = 0
+        tuple_value = []
+        temp_list = []
+        for tuple in self.List:
+            if previous_term == -1:
+                previous_term = tuple[0]
+                term_count += 1
+                previous_doc = tuple[1]
+                doc_count += 1
+                previous_position = tuple[2]
+                temp_list.append((tuple[1], tuple[2]))
+            elif tuple[0] == previous_term:
+                term_count +=1
+                if previous_doc != tuple[1]:
+                    doc_count += 1
+                    temp_list.append((tuple[1] - previous_doc, tuple[2]))
+                    previous_doc = tuple[1]
+                    previous_position = tuple[2]
+                else:
+                    temp_list.append((tuple[1] - previous_doc, tuple[2] - previous_position))
+                    previous_position = tuple[2]
+            else:
+                file.write(str(previous_term) + " " + str(term_count) + " " + str(doc_count))
+                for record in temp_list:
+                    file.write(" " + str(record[0]) + "," + str(record[1]))
+                file.write("\n")
+                temp_list = []
+                doc_count = 0
+                term_count = 0
+                previous_term = tuple[0]
+                temp_list.append((tuple[1] - previous_doc, tuple[2]))
+                term_count += 1
+                previous_doc = tuple[1]
+                doc_count += 1
+                previous_position = tuple[2]
+        file.close()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#end of InvertedIndexNoHash
 
 def main():
     if sys.argv.__len__() < 2:
         print("Insufficient arguments")
 
     arg = sys.argv[1]
+    print("Tokenizing the document")
     token = Token(arg)
     token.Tokenize()
-    NoHash = InvertedIndexHash(token)
+
+    print("Making term index without hashmap")
+    NoHash = InvertedIndexNoHash(token)
     NoHash.MakeList()
     NoHash.SavetoFile()
 
+    print("Making term index hashmap")
+    Hash = InvertedIndexHash(token)
+    Hash.MakeList()
+    Hash.SavetoFile()
 
 main()

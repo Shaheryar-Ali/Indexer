@@ -3,10 +3,10 @@ import sys
 #My terminal ran it as python read_index.py and givrs error at ./read_index.py so its designed for that
 
 def read_index():
-    if sys.argv.__len__() < 2:
+    if sys.argv.__len__() < 3:
         print("Insufficient arguments")
 
-    argv = sys.argv[1]
+    argv = sys.argv[2]
     file1 = open("termids.txt","r")
     list = file1.read()
     index = -1
@@ -16,7 +16,11 @@ def read_index():
             break
         index = word
 
-    id = int(index)
+    try:
+        id = int(index)
+    except ValueError:
+        print(argv, "not found in documents")
+        return
 
     file2 = open("term_index.txt","r")
     lines = file2.readlines()
