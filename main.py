@@ -103,7 +103,7 @@ class Token:
 
 # Class Token ends here
 
-class InvertedIndexNoHash:
+class InvertedIndexHash:
     Dictionary = {}
     termFrequencyList = {}
     docFrequencyList = {}
@@ -163,7 +163,7 @@ class InvertedIndexNoHash:
         file.close()
 
 
- #End of class InvertedIndexNoHash
+ #End of class InvertedIndexHash
 
 
 
@@ -190,7 +190,7 @@ def main():
     arg = sys.argv[1]
     token = Token(arg)
     token.Tokenize()
-    NoHash = InvertedIndexNoHash(token)
+    NoHash = InvertedIndexHash(token)
     NoHash.MakeList()
     NoHash.SavetoFile()
 
