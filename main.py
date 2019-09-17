@@ -196,21 +196,14 @@ class InvertedIndexNoHash:
 
     def SavetoFile(self):
         file = open("term_index_no_hash.txt", "w+")
-        previous_term = -1
+        previous_term = 0
         previous_doc = 0
-        term_count = 0
         previous_position = 0
+        term_count = 0
         doc_count = 0
         temp_list = []
         for tuple in self.List:
-            if previous_term == -1:
-                previous_term = tuple[0]
-                term_count += 1
-                previous_doc = tuple[1]
-                doc_count += 1
-                previous_position = tuple[2]
-                temp_list.append((tuple[1], tuple[2]))
-            elif tuple[0] == previous_term:
+            if tuple[0] == previous_term:
                 term_count +=1
                 if previous_doc != tuple[1]:
                     doc_count += 1
@@ -219,6 +212,7 @@ class InvertedIndexNoHash:
                     previous_position = tuple[2]
                 else:
                     temp_list.append((tuple[1] - previous_doc, tuple[2] - previous_position))
+                    previous_doc = tuple[1]
                     previous_position = tuple[2]
             else:
                 file.write(str(previous_term) + " " + str(term_count) + " " + str(doc_count))
@@ -229,7 +223,7 @@ class InvertedIndexNoHash:
                 doc_count = 0
                 term_count = 0
                 previous_term = tuple[0]
-                temp_list.append((tuple[1] - previous_doc, tuple[2]))
+                temp_list.append((tuple[1], tuple[2]))
                 term_count += 1
                 previous_doc = tuple[1]
                 doc_count += 1
@@ -252,9 +246,9 @@ def main():
     NoHash.MakeList()
     NoHash.SavetoFile()
 
-    print("Making term index hashmap")
-    Hash = InvertedIndexHash(token)
-    Hash.MakeList()
-    Hash.SavetoFile()
+#    print("Making term index hashmap")
+#    Hash = InvertedIndexHash(token)
+#    Hash.MakeList()
+#    Hash.SavetoFile()
 
 main()
